@@ -1,6 +1,6 @@
 <header class="header">
     <img class="logo" src="https://res.cloudinary.com/dceumpnjl/image/upload/v1631001570/samples/cloudinary-icon.png" alt="Decoded Frontend">
-    <div>
+    <div class="nav">
         <a class="nav-link" routerLinkActive="active" routerLink="/" [routerLinkActiveOptions]="{ exact:true }">Template-Driven Forms</a>
         <a class="nav-link" routerLinkActive="active" routerLink="/reactive-forms">Reactive Forms</a>
         <a class="nav-link" routerLinkActive="active" routerLink="/custom-rating-picker">Custom Rating Picker</a>
@@ -9,7 +9,6 @@
     </div>
     <input
         [(ngModel)]="searchString"
-        [ngModelOptions]="{ standalone: true }"
         class="global-search" 
         placeholder="Global Search" 
         type="text"

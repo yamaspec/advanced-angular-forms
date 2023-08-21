@@ -18,15 +18,15 @@ import { UserInfo } from '../../../core/user-info';
 export class TemplateFormsPageComponent implements OnInit {
 
     userInfo: UserInfo = {
-        firstName: '',
-        lastName: '',
-        nickName: '',
-        email: '',
-        yearOfBirth: 0,
-        passport: '',
-        fullAddress: '',
-        city: '',
-        postCode: 0
+        firstName: 'Marcus',
+        lastName: 'Aurelius',
+        nickName: 'Honcho',
+        email: 'marcus.aurelius@gmail.com',
+        yearOfBirth: 1984,
+        passport: 'PB4521B4587',
+        fullAddress: 'Palatine Ave',
+        city: 'Rome',
+        postCode: 1000
     };
 
     constructor() { }
