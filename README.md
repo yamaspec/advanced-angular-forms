@@ -17,8 +17,8 @@ custom-form-controls - Angular library where will be created custom components l
 This project has been created using Angular CLI, so you can start the project as any other Angular project.
 If you start the project from the main branch, then just run
 
---npm install
---npm run start - starts the forms-playground project;
+npm install
+npm run start - starts the forms-playground project;
 
 If you start the final application from other branches:
 
@@ -27,7 +27,7 @@ npm run build --project custom-form-controls
 
 You could add --watch to build the library with custom components (if you don't want to run it in watch-mode then remove --watch)
 
--npm run start - starts the forms-playground project;
+npm run start - starts the forms-playground project;
 
 ## Development server
 
