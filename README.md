@@ -24,6 +24,7 @@ If you start the final application from other branches:
 
 npm install
 npm run build --project custom-form-controls
+
   -- --watch - builds the library with custom components (if you don't want to run it in watch-mode then remove --watch)
 
 npm run start - starts the forms-playground project;
