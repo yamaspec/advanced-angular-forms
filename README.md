@@ -18,6 +18,10 @@ This project has been created using Angular CLI, so you can start the project as
 If you start the project from the main branch, then just run
 
 --- npm install
+
+
+
+
 To start the forms-playground project:
 --- npm run start
 
