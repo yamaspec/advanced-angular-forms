@@ -53,6 +53,24 @@ To start the forms-playground project:
 --- npm run start
 
 If you start the final application from other branches:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --- npm install
 --- npm run build --project custom-form-controls
 
