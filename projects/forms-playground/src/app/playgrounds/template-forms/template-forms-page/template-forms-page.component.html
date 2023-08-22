@@ -1,4 +1,4 @@
-<form calss="form" [ngFormOptions]="{ updateOn: 'blur' }">
+<form calss="form" #form="ngForm" (ngSubmit)="onSubmitForm(form, $event)" [ngFormOptions]="{ updateOn: 'blur' }">
     <p>Form Model State</p>
     <pre>{{userInfo | json}}</pre>
     <div class="form-field">
@@ -47,7 +47,7 @@
             <input [(ngModel)]="userInfo.passport" name="passport" type="text" id="passport" placeholder="Passport Number">
         </div>
     </div>
-    <fieldset>
+    <fieldset ngModelGroup="address">
         <legend>Address</legend>
         <div class="form-field">
             <label for="full-address">Full Adress</label>

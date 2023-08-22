@@ -4,6 +4,7 @@
   --color-accent: #ff8888;
   --color-accent-secondary: #ffc15a;
   --color-accent-secondary-darker: #faa415;
+  --color-success: #4caf50;
   --color-background: #eceff1;
   --color-text: #263238;
   --color-text-light: #607d8b;
@@ -84,4 +85,8 @@ input, button, select {
 
 select {
   width: 100%;
+}
+
+.ng-valid.ng-dirty:not([ngModelGroup]):not(form) {
+    border: 1px solid var(--color-success);
 }
