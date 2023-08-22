@@ -40,6 +40,7 @@ export class TemplateFormsPageComponent implements OnInit {
     }
 
     onSubmitForm(form: NgForm, event: SubmitEvent) {
+        console.log("Form: ", form);
         // Reset form values after submitting
         this.userInfo = {
             firstName: '',
