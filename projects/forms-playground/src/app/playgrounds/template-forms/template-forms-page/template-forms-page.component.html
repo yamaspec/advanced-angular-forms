@@ -138,5 +138,42 @@
             >
         </div>
     </fieldset>
+
+    <fieldset ngModelGroup="password" appPasswordShouldMatch>
+        <legend>User Password</legend>
+        <div class="form-field">
+            <label for="password">Password</label>
+            <input 
+                [(ngModel)]="userInfo.password"
+                required
+                minlength="6"
+                #password="ngModel"
+                name="password" 
+                type="password" 
+                id="password" 
+                placeholder="Enter your password"
+            >
+            <div *ngIf="password.dirty && password.hasError('required')" class="input-error">This field is required.</div>
+            <div *ngIf="password.dirty && password.hasError('minlength')" class="input-error">
+                This field is 6 characters long minimum.
+            </div>
+        </div>
+        <div class="form-field">
+            <label for="confirm-password">Confirm Password</label>
+            <input 
+                [(ngModel)]="userInfo.confirmPassword"
+                [ngModelOptions]="{ name: 'confirm-password', updateOn: 'change' }"
+                #confirmPassword="ngModel"
+                type="password" 
+                id="confirm-password"
+                placeholder="Confirm your password"
+            >
+            <div *ngIf="confirmPassword.dirty && confirmPassword.hasError('appPasswordShouldMatch')" class="input-error">
+                Password does not match.
+            </div>
+        </div>
+    </fieldset>
+
+
     <button [disabled]="form.invalid">Save</button>
 </form>

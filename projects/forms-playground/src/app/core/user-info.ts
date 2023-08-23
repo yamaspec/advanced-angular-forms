@@ -8,4 +8,6 @@ export interface UserInfo {
     fullAddress: string;
     city: string;
     postCode: number;
+    password: string;
+    confirmPassword: string;
 }

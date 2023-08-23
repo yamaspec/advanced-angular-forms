@@ -12,6 +12,7 @@ import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@an
         }
     ]
 })
+
 export class BanWordsDirective implements Validator {
     @Input() set appBanWords( value: string | string[] ) {
         this.bannedWords = Array.isArray(value) ? value : [value];

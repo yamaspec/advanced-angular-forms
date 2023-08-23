@@ -94,7 +94,7 @@ select {
 }
 
 // Use "input:invalid button" instead of ng-valid when using ngNativeValidate in the form
-.ng-invalid.ng-dirty:not([ngModelGroup]):not(form) {
+.ng-invalid.ng-dirty:not([ngModelGroup="address"]):not(form) {
     border: 1px solid var(--color-error);
 }
 
