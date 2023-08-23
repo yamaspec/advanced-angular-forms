@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserInfo } from '../../../core/user-info';
+import { BanWordsDirective } from '../validators/ban-words.directive';
 
 @Component({
     selector: 'app-template-forms-page',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, BanWordsDirective],
     templateUrl: './template-forms-page.component.html',
     styleUrls: [
         '../../common-page.scss',
@@ -23,7 +24,7 @@ export class TemplateFormsPageComponent implements OnInit {
         nickName: 'Honcho',
         email: 'marcus.aurelius@gmail.com',
         yearOfBirth: 1984,
-        passport: 'PB4521B4587',
+        passport: 'PB123456',
         fullAddress: 'Palatine Ave',
         city: 'Rome',
         postCode: 1000

@@ -1,4 +1,4 @@
-<form calss="form" #form="ngForm" (ngSubmit)="onSubmitForm(form, $event)" [ngFormOptions]="{ updateOn: 'blur' }">
+<form class="form" #form="ngForm" (ngSubmit)="onSubmitForm(form, $event)" [ngFormOptions]="{ updateOn: 'blur' }">
     <p>Form Model State</p>
     <pre>{{userInfo | json}}</pre>
     <div class="form-field">
@@ -8,13 +8,21 @@
             [ngModelOptions]="{ name: 'first-name', updateOn: 'change' }"
             required
             minlength="2"
+            appBanWords="test"
             #firstName="ngModel"
             type="text" 
             id="name" 
             placeholder="Enter your name"
         >
-        <div *ngIf="firstName.dirty && firstName.hasError('required')" class="input-error">This field is required</div>
-        <div *ngIf="firstName.dirty && firstName.hasError('minlength')" class="input-error">This field is too short</div>
+        <div *ngIf="firstName.dirty && firstName.hasError('required')" class="input-error">
+            This field is required.
+        </div>
+        <div *ngIf="firstName.dirty && firstName.hasError('minlength')" class="input-error">
+            Length should be at least <strong>{{firstName.getError('minlength').requiredLength}}</strong> characters long.
+        </div>
+        <div *ngIf="firstName.dirty && firstName.hasError('appBanWords')" class="input-error">
+            The value <strong>{{firstName.getError('appBanWords').bannedWord}}</strong> is not allowed.
+        </div>
     </div>
     <div class="form-field">
         <label for="last-name">Last Name</label>
@@ -23,13 +31,19 @@
             [ngModelOptions]="{ name: 'last-name' }"
             required
             minlength="2"
+            [appBanWords]="['test', 'mist', 'dummy']"
             #lastName="ngModel"
             type="text" 
             id="last-name" 
             placeholder="Enter your last name"
         >
-        <div *ngIf="lastName.dirty && lastName.hasError('required')" class="input-error">This field is required</div>
-        <div *ngIf="lastName.dirty && lastName.hasError('minlength')" class="input-error">This field is too short</div>
+        <div *ngIf="lastName.dirty && lastName.hasError('required')" class="input-error">This field is required.</div>
+        <div *ngIf="lastName.dirty && lastName.hasError('minlength')" class="input-error">
+            Length should be at least <strong>{{lastName.getError('minlength').requiredLength}}</strong> characters long.
+        </div>
+        <div *ngIf="lastName.dirty && lastName.hasError('appBanWords')" class="input-error">
+            The value <strong>{{lastName.getError('appBanWords').bannedWord}}</strong> is not allowed.
+        </div>
     </div>
     <div class="form-field">
         <label for="nick-name">Nick Name</label>
@@ -44,9 +58,13 @@
             id="nick-name" 
             placeholder="Come up with a nick name"
         >
-        <div *ngIf="nickName.dirty && nickName.hasError('required')" class="input-error">This field is required</div>
-        <div *ngIf="nickName.dirty && nickName.hasError('minlength')" class="input-error">This field is too short</div>
-        <div *ngIf="nickName.dirty && nickName.hasError('pattern')" class="input-error">Only letters, numbers, _ and . are allowed</div>
+        <div *ngIf="nickName.dirty && nickName.hasError('required')" class="input-error">This field is required.</div>
+        <div *ngIf="nickName.dirty && nickName.hasError('minlength')" class="input-error">
+            Length should be at least <strong>{{nickName.getError('minlength').requiredLength}}</strong> characters long.
+        </div>
+        <div *ngIf="nickName.dirty && nickName.hasError('pattern')" class="input-error">
+            Only letters, numbers, underscore (_) and dot (.) are allowed
+        </div>
     </div>
     <div class="form-field">
         <label for="email">Email</label>
@@ -74,14 +92,14 @@
             <label for="passport">Passport Number</label>
             <input 
                 [(ngModel)]="userInfo.passport" 
-                pattern="^[A-Z]{2}[0-]{6}$"
+                pattern="^[A-Z]{2}[0-9]{6}$"
                 #passport="ngModel"
                 name="passport" 
                 type="text" 
                 id="passport" 
                 placeholder="Passport Number"
             >
-            <div *ngIf="passport.dirty && passport.hasError('pattern')" class="input-error">Two letters and six numbers format</div>
+            <div *ngIf="passport.dirty && passport.hasError('pattern')" class="input-error">Two letters and six numbers format.</div>
         </div>
     </div>
     <fieldset ngModelGroup="address">
@@ -97,7 +115,7 @@
                 id="full-address" 
                 placeholder="Street name and house number"
             >
-            <div *ngIf="fullAddress.dirty && fullAddress.hasError('required')" class="input-error">This field is required</div>
+            <div *ngIf="fullAddress.dirty && fullAddress.hasError('required')" class="input-error">This field is required.</div>
         </div>
         <div class="form-field">
             <label for="city">City</label>
