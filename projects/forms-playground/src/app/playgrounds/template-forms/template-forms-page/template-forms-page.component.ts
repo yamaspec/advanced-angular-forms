@@ -35,6 +35,10 @@ export class TemplateFormsPageComponent implements OnInit {
 
     constructor() { }
 
+    get isAdult() {
+        return (new Date().getFullYear() - this.userInfo.yearOfBirth) >= 18;
+    }
+
     get years() {
         const now = new Date().getUTCFullYear();
         return Array(now - (now - 40)).fill('').map((_, idx) => now - idx);

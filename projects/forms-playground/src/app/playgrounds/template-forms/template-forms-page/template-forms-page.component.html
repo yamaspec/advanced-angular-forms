@@ -31,7 +31,6 @@
             [ngModelOptions]="{ name: 'last-name' }"
             required
             minlength="2"
-            [appBanWords]="['test', 'mist', 'dummy']"
             #lastName="ngModel"
             type="text" 
             id="last-name" 
@@ -41,9 +40,6 @@
         <div *ngIf="lastName.dirty && lastName.hasError('minlength')" class="input-error">
             Length should be at least <strong>{{lastName.getError('minlength').requiredLength}}</strong> characters long.
         </div>
-        <div *ngIf="lastName.dirty && lastName.hasError('appBanWords')" class="input-error">
-            The value <strong>{{lastName.getError('appBanWords').bannedWord}}</strong> is not allowed.
-        </div>
     </div>
     <div class="form-field">
         <label for="nick-name">Nick Name</label>
@@ -52,6 +48,7 @@
             [ngModelOptions]="{ name: 'nick-name', updateOn: 'blur' }"
             required
             minlength="3"
+            [appBanWords]="isAdult ? ['test', 'mist', 'dummy'] : []"
             #nickName="ngModel"
             pattern="^[\w.]+$"
             type="text" 
@@ -64,6 +61,9 @@
         </div>
         <div *ngIf="nickName.dirty && nickName.hasError('pattern')" class="input-error">
             Only letters, numbers, underscore (_) and dot (.) are allowed
+        </div>
+        <div *ngIf="nickName.dirty && nickName.hasError('appBanWords')" class="input-error">
+            The value <strong>{{nickName.getError('appBanWords').bannedWord}}</strong> is not allowed.
         </div>
     </div>
     <div class="form-field">
@@ -92,6 +92,7 @@
             <label for="passport">Passport Number</label>
             <input 
                 [(ngModel)]="userInfo.passport" 
+                [required]="isAdult"
                 pattern="^[A-Z]{2}[0-9]{6}$"
                 #passport="ngModel"
                 name="passport" 
@@ -100,6 +101,7 @@
                 placeholder="Passport Number"
             >
             <div *ngIf="passport.dirty && passport.hasError('pattern')" class="input-error">Two letters and six numbers format.</div>
+            <div *ngIf="passport.dirty && passport.hasError('required')" class="input-error">Required for adults.</div>
         </div>
     </div>
     <fieldset ngModelGroup="address">
