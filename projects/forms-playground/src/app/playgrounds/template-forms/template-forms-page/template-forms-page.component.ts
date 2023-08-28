@@ -4,11 +4,18 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { UserInfo } from '../../../core/user-info';
 import { BanWordsDirective } from '../validators/ban-words.directive';
 import { PasswordShouldMatchDirective } from '../validators/password-should-match.directive';
+import { UniqueNicknameDirective } from '../validators/unique-nickname.directive';
 
 @Component({
     selector: 'app-template-forms-page',
     standalone: true,
-    imports: [CommonModule, FormsModule, BanWordsDirective, PasswordShouldMatchDirective],
+    imports: [
+        CommonModule, 
+        FormsModule, 
+        BanWordsDirective, 
+        PasswordShouldMatchDirective, 
+        UniqueNicknameDirective
+    ],
     templateUrl: './template-forms-page.component.html',
     styleUrls: [
         '../../common-page.scss',
