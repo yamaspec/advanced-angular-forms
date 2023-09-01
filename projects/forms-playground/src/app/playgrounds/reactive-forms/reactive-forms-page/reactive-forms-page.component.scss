@@ -1,0 +1,24 @@
+.control-buttons {
+    margin-bottom: var(--spacing-step);
+    display: flex;
+    justify-content: end;
+}
+
+.add-button {
+    width: 50px;
+    padding: 5px;
+}
+
+.remove-button {
+    width: 50px;
+    background-color: transparent;
+    margin: 0 0 0 10px;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.control-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
