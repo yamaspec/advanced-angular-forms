@@ -1,4 +1,10 @@
-<form class="form" #form="ngForm" (ngSubmit)="onSubmitForm(form, $event)" [ngFormOptions]="{ updateOn: 'blur' }">
+<form 
+    class="form" 
+    #form="ngForm" 
+    (ngSubmit)="onSubmitForm($event)" 
+    (reset)="onReset($event)"
+    [ngFormOptions]="{ updateOn: 'blur' }"
+>
     <p>Form Model State</p>
     <pre>{{userInfo | json}}</pre>
     <div class="form-field">
