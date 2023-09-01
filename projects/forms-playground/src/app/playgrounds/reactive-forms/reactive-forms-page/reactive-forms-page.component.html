@@ -49,10 +49,13 @@
         <div class="control-buttons">
             <button class="add-button" type="button" (click)="addPhone()">+</button>
         </div>
-        <div class="form-field" *ngFor="let phone of form.controls.phones.controls; let i = index">
-            <label for="phone-{{i}}">Phone Number</label>
+        <div class="form-field" *ngFor="let phone of form.controls.phones.controls; let i = index" [formGroupName]="i">
+            <label for="phone-{{i}}">Phone Number {{i + 1}}</label>
             <div class="control-container">
-                <input [formControlName]="i" type="text" id="phone-{{i}}" placeholder="Enter phone number">
+                <select class="phone-label-list" formControlName="label">
+                    <option *ngFor="let phoneLabel of phoneLabels" [value]="phoneLabel">{{phoneLabel}}</option>
+                </select>
+                <input formControlName="phone" type="text" id="phone-{{i}}" placeholder="Enter phone number">
                 <button class="remove-button" type="button" (click)="removePhone(i)">-</button>
             </div>
         </div>

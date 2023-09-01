@@ -16,6 +16,8 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular
 })
 export class ReactiveFormsPageComponent implements OnInit {
 
+    phoneLabels: string[] = ["Mobile", "Work", "Home"];
+    
     form = new FormGroup({
         firstName: new FormControl('Marcus'),
         lastName: new FormControl('Latrell'),
@@ -29,7 +31,10 @@ export class ReactiveFormsPageComponent implements OnInit {
             postCode: new FormControl(0)
         }),
         phones: new FormArray([
-            new FormControl('')
+            new FormGroup({
+                label: new FormControl(this.phoneLabels[0]),
+                phone: new FormControl('')
+            })
         ])
     });
 
@@ -43,9 +48,12 @@ export class ReactiveFormsPageComponent implements OnInit {
     ngOnInit(): void {}
 
     addPhone() {
-        let phone: string | undefined | null = this.form.controls.phones.controls[0]?.value;
+        let phone: string | undefined | null = this.form.controls.phones.controls[0]?.controls.phone.value;
         if ((phone && phone.length > 0) || this.form.controls.phones.length === 0) {
-            this.form.controls.phones.insert(0, new FormControl(''));
+            this.form.controls.phones.insert(0, new FormGroup({
+                label: new FormControl(this.phoneLabels[0]),
+                phone: new FormControl('')
+            }));
         }
     }
 
