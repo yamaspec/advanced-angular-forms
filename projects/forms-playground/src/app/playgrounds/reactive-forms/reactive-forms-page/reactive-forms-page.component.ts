@@ -61,4 +61,8 @@ export class ReactiveFormsPageComponent implements OnInit {
         this.form.controls.phones.removeAt(index);
     }
 
+    onSubmit() {
+        
+    }
+
 }

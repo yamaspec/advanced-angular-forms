@@ -2,7 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.2.
 
-The project has just one branche: main.
+The project has just one branch: main.
 
 # Project description
 
