@@ -7,10 +7,6 @@
         <a class="nav-link" routerLinkActive="active" routerLink="/custom-select">Custom Select</a>
         <a class="nav-link" routerLinkActive="active" routerLink="/dynamic-forms">Dynamic Forms</a>
     </div>
-    <input
-        [(ngModel)]="searchString"
-        class="global-search" 
-        placeholder="Global Search" 
-        type="text"
-    >
+    <!-- <input [(ngModel)]="searchString" (ngModelChange)="onSearchStringChange($event)" class="global-search" placeholder="Global Search"  type="text"> -->
+    <input [formControl]="reactiveSearchString" class="global-search" placeholder="Global Search"  type="text">
 </header>
