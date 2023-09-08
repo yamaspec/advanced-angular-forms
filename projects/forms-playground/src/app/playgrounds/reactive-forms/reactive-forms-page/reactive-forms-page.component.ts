@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { Observable, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 
@@ -40,8 +40,10 @@ export class ReactiveFormsPageComponent implements OnInit {
                 phone: new FormControl('')
             })
         ]),
-        skills: new FormGroup<{ [key: string]: FormControl<boolean> }>({})
+        skills: new FormRecord<FormControl<boolean>>({})
     });
+    // Skills with FormGroup example:
+    // skills: new FormGroup<{ [key: string]: FormControl<boolean> }>({})
 
     private getYears(): number[] {
         const now = new Date().getUTCFullYear();
