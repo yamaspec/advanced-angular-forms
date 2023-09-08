@@ -60,5 +60,18 @@
             </div>
         </div>
     </fieldset>
+    <fieldset formGroupName="skills">
+        <legend>User Skills</legend>
+        <ng-container *ngIf="skills$ | async as skills; else loading">
+            <div class="skill-container" *ngFor="let skill of skills">
+                <input type="checkbox" [formControlName]="skill" [name]="skill" [id]="skill">
+                <label [for]="skill">{{ skill | titlecase }}</label>
+            </div>
+        </ng-container>
+    </fieldset>
     <button>Save</button>
 </form>
+
+<ng-template #loading>
+    <p>Skills are loading...</p>
+</ng-template>

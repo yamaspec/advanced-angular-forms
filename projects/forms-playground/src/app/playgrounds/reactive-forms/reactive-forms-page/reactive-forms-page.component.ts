@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Observable, tap } from 'rxjs';
+import { UserSkillsService } from '../../../core/user-skills.service';
 
 @Component({
     selector: 'app-reactive-forms-page',
@@ -18,6 +20,7 @@ export class ReactiveFormsPageComponent implements OnInit {
 
     phoneLabels: string[] = ["Mobile", "Work", "Home"];
     years = this.getYears();
+    skills$!: Observable<string[]>;
     
     form = new FormGroup({
         firstName: new FormControl<string>('Marcus'),       // string and null values are allowed.
@@ -36,17 +39,22 @@ export class ReactiveFormsPageComponent implements OnInit {
                 label: new FormControl(this.phoneLabels[0], { nonNullable: true }),
                 phone: new FormControl('')
             })
-        ])
+        ]),
+        skills: new FormGroup<{ [key: string]: FormControl<boolean> }>({})
     });
 
-    private getYears() {
+    private getYears(): number[] {
         const now = new Date().getUTCFullYear();
         return Array(now - (now - 40)).fill('').map((_, idx) => now - idx);
     }
 
-    constructor() {}
+    constructor(private userSkills: UserSkillsService) {}
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.skills$ = this.userSkills.getSkills().pipe(
+            tap(skills => this.buildSkillControls(skills))
+        );
+    }
 
     addPhone() {
         let phone: string | undefined | null = this.form.controls.phones.controls[0]?.controls.phone.value;
@@ -63,7 +71,13 @@ export class ReactiveFormsPageComponent implements OnInit {
     }
 
     onSubmit() {
-        
+        console.log(this.form.controls);
+    }
+
+    buildSkillControls(skills: string[]) {
+        skills.forEach((skill: string) => {
+            this.form.controls.skills.addControl(skill, new FormControl(false, { nonNullable: true }));
+        });
     }
 
 }
