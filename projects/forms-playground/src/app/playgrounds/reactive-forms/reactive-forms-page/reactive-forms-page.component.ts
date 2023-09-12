@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
 import { Observable, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 
@@ -22,25 +22,26 @@ export class ReactiveFormsPageComponent implements OnInit {
     years = this.getYears();
     skills$!: Observable<string[]>;
     
-    form = new FormGroup({
-        firstName: new FormControl<string>('Marcus'),       // string and null values are allowed.
-        lastName: new FormControl('Latrell'),               // Could be Untyped: UntypedFormControl('Latrell')
-        nickName: new FormControl('Slinger', { nonNullable: true }),   // string only and define value by default.
-        email: new FormControl('slinger@gmail.com'),
-        yearOfBirth: new FormControl(this.years[this.years.length - 1], { nonNullable: true }),  // number and value by default.
-        passport: new FormControl('PB123456'),
-        address: new FormGroup({                            // Could be Untyped: UntypedFormGroup({...})
-            fullAddress: new FormControl('', { nonNullable: true }),
-            city: new FormControl('', { nonNullable: true }),
-            postCode: new FormControl(0, { nonNullable: true })
+    form = this.formBuilder.group({
+        firstName: 'Marcus',       // string and null values are allowed.
+        lastName: 'Latrell',               // Could be Untyped: UntypedFormControl('Latrell')
+        nickName: this.formBuilder.nonNullable.control('Slinger'),   // string only and define value by default.
+        email: 'slinger@gmail.com',
+        yearOfBirth: this.formBuilder.nonNullable.control(this.years[this.years.length - 1]),  // number and value by default.
+        passport: 'PB123456',
+        address: this.formBuilder.nonNullable.group({                      // Could be Untyped: UntypedFormGroup({...})
+            fullAddress: '',
+            city: '',
+            postCode: 0,
         }),
-        phones: new FormArray([                             // Could be Untyped: UntypedFormArray([...])
-            new FormGroup({
-                label: new FormControl(this.phoneLabels[0], { nonNullable: true }),
-                phone: new FormControl('')
+        phones: this.formBuilder.array([                             // Could be Untyped: UntypedFormArray([...])
+            this.formBuilder.group({
+                label: this.formBuilder.nonNullable.control(this.phoneLabels[0]),
+                phone: ''
             })
         ]),
         skills: new FormRecord<FormControl<boolean>>({})
+        // skills: this.formBuilder.record<boolean>({})    // Record is available since Angular 14.2
     });
     // Skills with FormGroup example:
     // skills: new FormGroup<{ [key: string]: FormControl<boolean> }>({})
@@ -50,7 +51,7 @@ export class ReactiveFormsPageComponent implements OnInit {
         return Array(now - (now - 40)).fill('').map((_, idx) => now - idx);
     }
 
-    constructor(private userSkills: UserSkillsService) {}
+    constructor(private userSkills: UserSkillsService, private formBuilder: FormBuilder) {}
 
     ngOnInit(): void {
         this.skills$ = this.userSkills.getSkills().pipe(
