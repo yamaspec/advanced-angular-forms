@@ -69,7 +69,7 @@
             </div>
         </ng-container>
     </fieldset>
-    <button>Save</button>
+    <button [disabled]="form.invalid">Save</button>
 </form>
 
 <ng-template #loading>

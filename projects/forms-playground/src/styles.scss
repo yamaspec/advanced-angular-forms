@@ -95,13 +95,23 @@ select {
     width: 100%;
 }
 
+// Template-Driven Form styles.
 // Use "input:valid button" instead of ng-valid when using ngNativeValidate in the form
-.ng-valid.ng-dirty:not([ngModelGroup]):not(form):not([formArrayName]):not([formGroupName]) {
+// .ng-valid.ng-dirty:not([ngModelGroup]):not(form):not([formArrayName]):not([formGroupName]) {
+//     border: 1px solid var(--color-success);
+// }
+
+// Use "input:invalid button" instead of ng-valid when using ngNativeValidate in the form
+// .ng-invalid.ng-dirty:not([ngModelGroup="address"]):not([formArrayName]):not([formGroupName]) {
+//     border: 1px solid var(--color-error);
+// }
+
+// Reactive Forms styles
+.ng-valid.ng-dirty:not([formGroupName]):not([formArrayName]):not([formGroup]) {
     border: 1px solid var(--color-success);
 }
 
-// Use "input:invalid button" instead of ng-valid when using ngNativeValidate in the form
-.ng-invalid.ng-dirty:not([ngModelGroup="address"]):not([formArrayName]):not([formGroupName]) {
+.ng-invalid.ng-dirty:not([formArrayName]):not([formGroupName]):not([form]) {
     border: 1px solid var(--color-error);
 }
 

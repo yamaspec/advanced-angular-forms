@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 
@@ -19,20 +19,29 @@ import { UserSkillsService } from '../../../core/user-skills.service';
 export class ReactiveFormsPageComponent implements OnInit {
 
     phoneLabels: string[] = ["Mobile", "Work", "Home"];
-    years = this.getYears();
+    years: number[] = this.getYears();
     skills$!: Observable<string[]>;
     
     form = this.formBuilder.group({
-        firstName: 'Marcus',       // string and null values are allowed.
-        lastName: 'Latrell',               // Could be Untyped: UntypedFormControl('Latrell')
-        nickName: this.formBuilder.nonNullable.control('Slinger'),   // string only and define value by default.
-        email: 'slinger@gmail.com',
-        yearOfBirth: this.formBuilder.nonNullable.control(this.years[this.years.length - 1]),  // number and value by default.
-        passport: 'PB123456',
+        firstName: ['Marcus', [Validators.required, Validators.minLength(2)]],
+        lastName: ['Aurelius', [Validators.required, Validators.minLength(2)]],
+        nickName: ['', 
+            [
+                Validators.required, 
+                Validators.minLength(2), 
+                Validators.pattern(/^[\w.]+$/)
+            ]
+        ],
+        email: ['slinger@gmail.com', [Validators.email, Validators.required]],
+        yearOfBirth: [
+            this.formBuilder.nonNullable.control(this.years[this.years.length - 1]),
+            Validators.required
+        ],
+        passport: ['PB123456', Validators.pattern(/^[A-Z]{2}[0-9]{6}$/)],
         address: this.formBuilder.nonNullable.group({                      // Could be Untyped: UntypedFormGroup({...})
-            fullAddress: '',
-            city: '',
-            postCode: 0,
+            fullAddress: ['', Validators.required],
+            city: ['', Validators.required],
+            postCode: [0, Validators.required],
         }),
         phones: this.formBuilder.array([                             // Could be Untyped: UntypedFormArray([...])
             this.formBuilder.group({
