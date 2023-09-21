@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subscription, startWith, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 import { banWords } from '../custom-validators/ban-words.validators';
 import { confirmPassword } from '../custom-validators/confirm-password.validators';
@@ -18,11 +18,12 @@ import { confirmPassword } from '../custom-validators/confirm-password.validator
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReactiveFormsPageComponent implements OnInit {
+export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
     phoneLabels: string[] = ["Mobile", "Work", "Home"];
-    years: number[] = [];
+    years: number[] = this.getYears();
     skills$!: Observable<string[]>;
+    ageValidators!: Subscription;
     
     form = this.formBuilder.group({
         firstName: ['Marcus', [Validators.required, Validators.minLength(2), banWords(['test', 'card'])]],
@@ -32,15 +33,12 @@ export class ReactiveFormsPageComponent implements OnInit {
                 Validators.required, 
                 Validators.minLength(2), 
                 Validators.pattern(/^[\w.]+$/),
-                , banWords(['anonymous', 'dummy'])
+                banWords(['anonymous', 'dummy'])
             ]
         ],
         email: ['slinger@gmail.com', [Validators.email, Validators.required]],
-        yearOfBirth: [
-            this.formBuilder.nonNullable.control(this.years[this.years.length - 1]),
-            Validators.required
-        ],
-        passport: ['PB123456', Validators.pattern(/^[A-Z]{2}[0-9]{6}$/)],
+        yearOfBirth: [this.years[this.years.length - 1], Validators.required],
+        passport: ['PB123456', [Validators.pattern(/^[A-Z]{2}[0-9]{6}$/), Validators.required]],
         address: this.formBuilder.nonNullable.group({                      // Could be Untyped: UntypedFormGroup({...})
             fullAddress: ['', Validators.required],
             city: ['', Validators.required],
@@ -73,10 +71,27 @@ export class ReactiveFormsPageComponent implements OnInit {
     constructor(private userSkills: UserSkillsService, private formBuilder: FormBuilder) {}
 
     ngOnInit(): void {
-        this.years = this.getYears();
         this.skills$ = this.userSkills.getSkills().pipe(
             tap(skills => this.buildSkillControls(skills))
         );
+        this.ageValidators = this.form.controls.yearOfBirth.valueChanges
+        .pipe(
+            tap(() => this.form.controls.passport.markAsDirty()),
+            startWith(this.form.controls.yearOfBirth.value)
+        )
+        .subscribe(yearOfBirth => {
+            // Note: Validators using functions as minLength(10) require to use a variable in order to modify them:
+            // dynamicLength = Validators.minLength(10);
+            // this.form.controls.passport.addValidators(this.dynamicLength)
+            this.isAdult(yearOfBirth)
+                ? this.form.controls.passport.addValidators(Validators.required)
+                : this.form.controls.passport.removeValidators(Validators.required);
+            this.form.controls.passport.updateValueAndValidity();
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.ageValidators.unsubscribe();
     }
 
     addPhone() {
@@ -101,6 +116,15 @@ export class ReactiveFormsPageComponent implements OnInit {
         skills.forEach((skill: string) => {
             this.form.controls.skills.addControl(skill, new FormControl(false, { nonNullable: true }));
         });
+    }
+
+    private isAdult(yearOfBirth: (number | null)): boolean {
+        let isAdult: boolean = false;
+        if (yearOfBirth) {
+            let thisYear: number = new Date().getUTCFullYear()
+            isAdult = (thisYear - yearOfBirth >= 18);
+        }
+        return isAdult;
     }
 
 }

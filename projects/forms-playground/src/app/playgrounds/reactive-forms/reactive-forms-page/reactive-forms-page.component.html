@@ -67,8 +67,11 @@
             <label for="passport">Passport Number</label>
             <input formControlName="passport" type="text" id="passport" placeholder="Provide Passport Data">
             <ng-container *ngIf="form.controls.passport as passport">
+                <div class="input-error" *ngIf="passport.dirty && passport.hasError('required')">
+                    This field is required.
+                </div>
                 <div class="input-error" *ngIf="passport.dirty && passport.hasError('pattern')">
-                    This field requires 2 capital letters and 6 numbers format.
+                    Format: 2 capital letters and 6 numbers.
                 </div>
             </ng-container>
         </div>
