@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
+import { banWords } from '../custom-validators/ban-words.validators';
+import { confirmPassword } from '../custom-validators/confirm-password.validators';
 
 @Component({
     selector: 'app-reactive-forms-page',
@@ -19,17 +21,18 @@ import { UserSkillsService } from '../../../core/user-skills.service';
 export class ReactiveFormsPageComponent implements OnInit {
 
     phoneLabels: string[] = ["Mobile", "Work", "Home"];
-    years: number[] = this.getYears();
+    years: number[] = [];
     skills$!: Observable<string[]>;
     
     form = this.formBuilder.group({
-        firstName: ['Marcus', [Validators.required, Validators.minLength(2)]],
+        firstName: ['Marcus', [Validators.required, Validators.minLength(2), banWords(['test', 'card'])]],
         lastName: ['Aurelius', [Validators.required, Validators.minLength(2)]],
         nickName: ['', 
             [
                 Validators.required, 
                 Validators.minLength(2), 
-                Validators.pattern(/^[\w.]+$/)
+                Validators.pattern(/^[\w.]+$/),
+                , banWords(['anonymous', 'dummy'])
             ]
         ],
         email: ['slinger@gmail.com', [Validators.email, Validators.required]],
@@ -49,11 +52,18 @@ export class ReactiveFormsPageComponent implements OnInit {
                 phone: ''
             })
         ]),
-        skills: new FormRecord<FormControl<boolean>>({})
-        // skills: this.formBuilder.record<boolean>({})    // Record is available since Angular 14.2
+        skills: new FormRecord<FormControl<boolean>>({}),
+        password: this.formBuilder.group({
+            password: ['', [Validators.required, Validators.minLength(6)]],
+            confirmPassword: ''
+        },
+        {
+            // Assign the validator to the group in order to have access to all controls and compare them.
+            validators: confirmPassword
+        })
     });
-    // Skills with FormGroup example:
-    // skills: new FormGroup<{ [key: string]: FormControl<boolean> }>({})
+    // Record is available since Angular 14.2: skills: this.formBuilder.record<boolean>({})
+    // Skills with FormGroup example: skills: new FormGroup<{ [key: string]: FormControl<boolean> }>({})
 
     private getYears(): number[] {
         const now = new Date().getUTCFullYear();
@@ -63,6 +73,7 @@ export class ReactiveFormsPageComponent implements OnInit {
     constructor(private userSkills: UserSkillsService, private formBuilder: FormBuilder) {}
 
     ngOnInit(): void {
+        this.years = this.getYears();
         this.skills$ = this.userSkills.getSkills().pipe(
             tap(skills => this.buildSkillControls(skills))
         );
