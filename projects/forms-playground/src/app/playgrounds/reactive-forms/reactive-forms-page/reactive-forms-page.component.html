@@ -161,7 +161,7 @@
             </ng-container>
         </div>
     </fieldset>
-    <button [disabled]="form.invalid">Save</button>
+    <button [disabled]="form.invalid && form.pending">Save</button>
 </form>
 
 <ng-template #loading>
