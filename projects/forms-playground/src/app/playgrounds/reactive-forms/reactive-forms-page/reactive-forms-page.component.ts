@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Observable, Subscription, startWith, tap } from 'rxjs';
+import { Observable, Subscription, bufferCount, filter, startWith, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 import { banWords } from '../custom-validators/ban-words.validators';
 import { confirmPassword } from '../custom-validators/confirm-password.validators';
+import { UniqueNicknameValidator } from '../custom-validators/unique-nickname.validators';
 
 @Component({
     selector: 'app-reactive-forms-page',
@@ -23,18 +24,26 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
     phoneLabels: string[] = ["Mobile", "Work", "Home"];
     years: number[] = this.getYears();
     skills$!: Observable<string[]>;
-    ageValidators!: Subscription;
+    private ageValidators!: Subscription;
+    private formPendingState!: Subscription;
     
     form = this.formBuilder.group({
         firstName: ['Marcus', [Validators.required, Validators.minLength(2), banWords(['test', 'card'])]],
         lastName: ['Aurelius', [Validators.required, Validators.minLength(2)]],
-        nickName: ['', 
-            [
-                Validators.required, 
-                Validators.minLength(2), 
-                Validators.pattern(/^[\w.]+$/),
-                banWords(['anonymous', 'dummy'])
-            ]
+        nickName: ['',
+            // This control is different to allow the unique Nickname validator to call the API just on blur.
+            {
+                validators: [
+                    Validators.required, 
+                    Validators.minLength(2), 
+                    Validators.pattern(/^[\w.]+$/),
+                    banWords(['anonymous', 'dummy']),
+                ],
+                asyncValidators: [
+                    this.uniqueNicknameValidator.validate.bind(this.uniqueNicknameValidator)
+                ],
+                updateOn: "blur"
+            },
         ],
         email: ['slinger@gmail.com', [Validators.email, Validators.required]],
         yearOfBirth: [this.years[this.years.length - 1], Validators.required],
@@ -68,7 +77,12 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
         return Array(now - (now - 40)).fill('').map((_, idx) => now - idx);
     }
 
-    constructor(private userSkills: UserSkillsService, private formBuilder: FormBuilder) {}
+    constructor(
+        private userSkills: UserSkillsService, 
+        private formBuilder: FormBuilder,
+        private uniqueNicknameValidator: UniqueNicknameValidator,
+        private changeDetectorRef: ChangeDetectorRef
+    ) {}
 
     ngOnInit(): void {
         this.skills$ = this.userSkills.getSkills().pipe(
@@ -88,10 +102,15 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
                 : this.form.controls.passport.removeValidators(Validators.required);
             this.form.controls.passport.updateValueAndValidity();
         });
+        this.formPendingState = this.form.statusChanges.pipe(
+            bufferCount(2, 1),
+            filter(([prevState]) => prevState === "PENDING")
+        ).subscribe(() => this.changeDetectorRef.markForCheck());
     }
 
     ngOnDestroy(): void {
         this.ageValidators.unsubscribe();
+        this.formPendingState.unsubscribe();
     }
 
     addPhone() {
