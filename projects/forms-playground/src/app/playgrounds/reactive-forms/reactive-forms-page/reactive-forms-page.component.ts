@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, Subscription, bufferCount, filter, startWith, tap } from 'rxjs';
 import { UserSkillsService } from '../../../core/user-skills.service';
 import { banWords } from '../custom-validators/ban-words.validators';
@@ -26,6 +26,10 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
     skills$!: Observable<string[]>;
     private ageValidators!: Subscription;
     private formPendingState!: Subscription;
+    private initialFormValues: any;   // The last valid values in the latest submission.
+
+    // Strategy 2: To avoid using this.form.reset()
+    @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
     
     form = this.formBuilder.group({
         firstName: ['Marcus', [Validators.required, Validators.minLength(2), banWords(['test', 'card'])]],
@@ -46,7 +50,7 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
             },
         ],
         email: ['slinger@gmail.com', [Validators.email, Validators.required]],
-        yearOfBirth: [this.years[this.years.length - 1], Validators.required],
+        yearOfBirth: [ this.years[this.years.length - 1], Validators.required],
         passport: ['PB123456', [Validators.pattern(/^[A-Z]{2}[0-9]{6}$/), Validators.required]],
         address: this.formBuilder.nonNullable.group({                      // Could be Untyped: UntypedFormGroup({...})
             fullAddress: ['', Validators.required],
@@ -86,7 +90,8 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.skills$ = this.userSkills.getSkills().pipe(
-            tap(skills => this.buildSkillControls(skills))
+            tap(skills => this.buildSkillControls(skills)),
+            tap(() => this.initialFormValues = this.form.value)
         );
         this.ageValidators = this.form.controls.yearOfBirth.valueChanges
         .pipe(
@@ -129,6 +134,19 @@ export class ReactiveFormsPageComponent implements OnInit, OnDestroy {
 
     onSubmit() {
         console.log(this.form.controls);
+        // Strategy 1: Reset form values to null and controls/groups/arrays pristine and untouched. The easiest.
+        // this.form.reset();
+        // However, submitted status is set to true.
+
+        // Strategy 2: Keep the values of the latest submit plus to change the submitted status to false as well.
+        this.initialFormValues = this.form.value;
+        this.formDirective.resetForm(this.form.value);
+
+    }
+
+    onReset(event: Event) {
+        event.preventDefault();  // To avoid the native behaviour of the form which clears the control values.
+        this.formDirective.resetForm(this.initialFormValues);
     }
 
     buildSkillControls(skills: string[]) {
