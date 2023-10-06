@@ -1,1 +1,17 @@
-<p>Something awersome is going to be here 😉</p>
+<form class="review" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <h3>Course Review</h3>
+    <!-- No need to create a separate Directive to link the text area with the form. ngDefaultControl will do it for us. -->
+    <!-- <paper-textarea
+        ngDefaultControl
+        class="review-text"
+        placeholder="Your honest review..."
+        label="Review Text"
+        rows="2"
+    ></paper-textarea> -->
+    <br>
+    <!-- Another option by creating a directive which links the form and the text area. -->
+    <div class="review-textarea" contenteditable formControlName="reviewText">
+    </div>
+
+    <button>Save</button>
+</form>
