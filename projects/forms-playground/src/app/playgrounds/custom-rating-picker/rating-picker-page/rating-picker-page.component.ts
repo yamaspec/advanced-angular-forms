@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import '@polymer/paper-input/paper-textarea';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { EditableContentValueAccessor } from '../value-accessor/editable-content.directive';
+import { RatingPickerComponent } from 'custom-form-controls';
+import { Rating } from './rating-picker.types';
 
 @Component({
     selector: 'app-rating-picker-page',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, EditableContentValueAccessor],
+    imports: [CommonModule, ReactiveFormsModule, EditableContentValueAccessor, RatingPickerComponent],
     templateUrl: './rating-picker-page.component.html',
     styleUrls: [
         '../../common-page.scss',
@@ -18,8 +20,9 @@ import { EditableContentValueAccessor } from '../value-accessor/editable-content
 })
 export class RatingPickerPageComponent implements OnInit {
 
-    form = this.formBuilder.group({
-        reviewText: ''
+    form = this.formBuilder.group<Rating>({
+        reviewText: '',
+        reviewRating: null
     });
 
     constructor(private formBuilder: FormBuilder) {}
